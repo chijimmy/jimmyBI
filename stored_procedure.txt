@@ -1,0 +1,12 @@
+ALTER Procedure [dbo].[ssrsTransport](@Lat decimal(12,9),@Lon decimal(12,9))
+
+AS
+declare @Meter Float = 1000;
+
+
+DECLARE @g geography = geography::Point(@Lat,@Lon,4326);
+
+SELECT  a.Suburb, a.City,b.Trans_Name Local_Public_Transport FROM DimGeography a, DimTransport b
+WHERE a.postcode = b.Trans_id and
+@g.STDistance(geography::Point(Lat,Lon,4326)) <@Meter  
+ORDER BY @g.STDistance(geography::Point(Lat,Lon,4326)); 
